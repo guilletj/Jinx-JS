@@ -12,7 +12,7 @@ try {
     process.exit(1);
 }
 
-const token = cfg.token;
+const interactionCreate = require('./modules/interactionCreate.js');
 
 const allIntents = new Intents();
 allIntents.add(Intents.FLAGS.DIRECT_MESSAGES,
@@ -32,6 +32,7 @@ allIntents.add(Intents.FLAGS.DIRECT_MESSAGES,
     Intents.FLAGS.GUILD_WEBHOOKS);
 
 const client = new Client({ intents: allIntents });
+
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
@@ -40,4 +41,12 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
 }
 
-client.login(token).then(() => console.log('Ready'));
+client.login(cfg.token).then(() => {
+    console.log('Ready');
+    client.user.setStatus(cfg.profile.presence.status)
+    client.user.setActivity(cfg.profile.presence.text, {type: cfg.profile.presence.type});
+});
+
+client.on('interactionCreate', (interaction) => {
+    interactionCreate(interaction, client);
+});
