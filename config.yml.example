@@ -1,0 +1,9 @@
+token: "DISCORD TOKEN HERE"
+steamApi: "STEAM API KEY HERE"
+profile:
+  name: "J!nx"
+  desc: "Coded by Edyone for New Era Roleplay!"
+  presence:
+    type: "PLAYING" # PLAYING, LISTENING, WATCHING or STREAMING only
+    text: "New Era Roleplay"
+    status: "online" # online, idle, dnd or offline only
