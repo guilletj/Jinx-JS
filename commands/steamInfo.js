@@ -3,6 +3,7 @@ const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const https = require('https');
+const steam = require('steamidconvert')()
 let steamAPI;
 
 try {
@@ -15,7 +16,6 @@ try {
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('steaminfo')
-		//TODO: Introducir SteamID clasica y convertirla a SteamID64 de forma transparente al usuario
 		.setDescription('Obtiene datos del usuario en cuestión dada una SteamID')
 		.addStringOption(option => option
 			.setName('steamid')
@@ -25,7 +25,7 @@ module.exports = {
 		const options = {
 			hostname: 'api.steampowered.com',
 			port: 443,
-			path: `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamAPI}&steamids=${interaction.options.getString('steamid')}`,
+			path: `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamAPI}&steamids=${steam.convertTo64(interaction.options.getString('steamid'))}`,
 			method: 'GET'
 		}
 
@@ -35,14 +35,30 @@ module.exports = {
 			res.on('data', d => {
 				//TODO: La respuesta será vacia si la SteamID no es correcta, hay que manejar esa situación
 				const json = JSON.parse(d);
+				console.log(json.response.players[0]);
 				const embed = new MessageEmbed()
-					.setTitle(String(json.response.players[0].personaname))
-					.setImage(json.response.players[0].avatarfull)
-					.setDescription('Test')
+					.setColor('#39CEDB')
+					.setURL(String(json.response.players[0].profileurl))
+					.setTitle(`Informacion de ${String(json.response.players[0].personaname)}`)
+					.setThumbnail(json.response.players[0].avatarfull)
+					.addFields(
+						{ name: 'Estado', value: checkStatus(json.response.players[0].personastate) },
+						{ name: 'SteamID', value: interaction.options.getString('steamid'), inline: true},
+						{ name: 'SteamID64', value: steam.convertTo64(interaction.options.getString('steamid')), inline: true }
+					)
 				interaction.reply({ embeds: [embed] });
 			})
 		})
 
 		req.end();
 	},
+};
+
+function checkStatus(status) {
+	switch (status) {
+	case 0:
+		return 'Desconectado';
+	default:
+		return 'Conectado';
+	}
 };
