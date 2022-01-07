@@ -17,6 +17,13 @@ module.exports = {
 			.setDescription('SteamID estándar del usuario')
 			.setRequired(true)),
 	async execute(interaction) {
+		let steamID;
+		try {
+			steamID = steam.convertTo64(interaction.options.getString('steamid'));
+		} catch (ex) {
+			await interaction.reply({ content: 'SteamID inválida', ephemeral: true });
+			return;
+		}
 		const options = {
 			hostname: 'api.steampowered.com',
 			port: 443,
