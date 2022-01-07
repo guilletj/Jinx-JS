@@ -3,15 +3,10 @@ const fs = require('fs');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const https = require('https');
-const steam = require('steamidconvert')()
-let steamAPI;
+const steam = require('steamidconvert')();
+const { cfg } = require('../modules/configLoader.js');
 
-try {
-	const cfg = yaml.load(fs.readFileSync('./config.yaml', 'utf8'));
-	steamAPI = cfg.steamApi;
-} catch (ex) {
-	console.log('Failed to load config when getting SteamAPI key...');
-}
+const steamAPI = cfg.steamApi;
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -61,4 +56,4 @@ function checkStatus(status) {
 	default:
 		return 'Conectado';
 	}
-};
+}

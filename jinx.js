@@ -1,19 +1,9 @@
 const { Client, Intents, Collection } = require('discord.js');
-const yaml = require('js-yaml')
+const { cfg } = require('./modules/configLoader.js')
 const fs = require('fs');
-let cfg;
-
-try {
-    console.log('Loading config...')
-    cfg = yaml.load(fs.readFileSync('./config.yaml', 'utf8'));
-    console.log('Config loaded successfully');
-} catch (ex) {
-    console.log('Failed to load config, exiting now...');
-    process.exit(1);
-}
 
 console.log('Loading modules...')
-const interactionCreate = require('./modules/interactionCreate.js');
+const interactionCreate = require('./modules/discordEvents/interactionCreate.js');
 console.log('All modules loaded!')
 
 const allIntents = new Intents();
