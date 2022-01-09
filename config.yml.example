@@ -7,3 +7,8 @@ profile:
     type: "PLAYING" # PLAYING, LISTENING, WATCHING or STREAMING only
     text: "New Era Roleplay"
     status: "online" # online, idle, dnd or offline only
+database: # Database used for New Era RP ID addon (maybe available at gmodstore someday)
+  host: "DATABASE SERVER IP"
+  user: "USER USED FOR CONNECTIONS"
+  password: "USER PASSWORD"
+  database: "DATABASE TO USE"
