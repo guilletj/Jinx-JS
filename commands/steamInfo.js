@@ -1,10 +1,8 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const steam = require('steamidconvert')();
-const { cfg } = require('../modules/configLoader.js');
 const { fetchProfileInfo } = require('../modules/steamApi.js')
 const { MessageEmbed } = require('discord.js');
 
-const steamAPI = cfg.steamApi;
 
 module.exports = {
 	data: new SlashCommandBuilder()
