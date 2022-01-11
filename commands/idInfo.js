@@ -37,7 +37,7 @@ module.exports = {
 						{ name: 'Estado', value: checkStatus(profile.personastate) },
 						{ name: 'SteamID', value: steam.convertToText(profile.steamid), inline: true },
 						{ name: 'SteamID64', value: profile.steamid, inline: true },
-						//{ name: "¿Tiene Garry's Mod comprado?", value: checkGModOwnership(ownershipData) }
+						{ name: "Horas en Garry's Mod", value: checkGModOwnership(GMData) }
 					)
 				await interaction.reply({ embeds: [embed] });
 			}
@@ -55,5 +55,11 @@ function checkStatus(status) {
 }
 
 function checkGModOwnership(data) {
-
+	let d = data.response.games;
+	const GMData = d.find(o => o.appid === 4000);
+	if (GMData == null) {
+		return 'Family Sharing';
+	}
+	const playtimeHours = GMData.playtime_forever/60;
+	return Math.round(playtimeHours).toString();
 }

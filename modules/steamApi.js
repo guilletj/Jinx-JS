@@ -25,7 +25,7 @@ async function fetchSteamLevel(steamid) {
 
 async function fetchGMstats(steamid) {
 	let data;
-	await axios.get(`https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${steamAPI}&`)
+	await axios.get(`https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${steamAPI}&steamid=${steamid}&include_appinfo=0`)
 		.then(response => {
 			data = response.data;
 			console.log(data);
