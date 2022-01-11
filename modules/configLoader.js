@@ -7,6 +7,7 @@ try {
 	cfg = yaml.load(fs.readFileSync('./config.yaml', 'utf8'));
 	console.log('Config loaded successfully');
 } catch (ex) {
+	console.log(ex);
 	console.log('Failed to load config, exiting now...');
 	process.exit(1);
 }

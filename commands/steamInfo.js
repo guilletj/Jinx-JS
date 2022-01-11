@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const steam = require('steamidconvert')();
-const { fetchProfileInfo } = require('../modules/steamApi.js')
+const { fetchBasicProfileInfo } = require('../modules/steamApi.js')
 const { MessageEmbed } = require('discord.js');
 
 
@@ -20,7 +20,7 @@ module.exports = {
 			await interaction.reply({ content: 'SteamID inválida', ephemeral: true });
 			return;
 		}
-		const profileInfo = await fetchProfileInfo(steamID)
+		const profileInfo = await fetchBasicProfileInfo(steamID)
 		const embed = new MessageEmbed()
 			.setColor('#39CEDB')
 			.setURL(String(profileInfo.response.players[0].profileurl))

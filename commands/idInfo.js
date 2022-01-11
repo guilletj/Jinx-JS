@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const steam = require('steamidconvert')();
-const { fetchProfileInfo } = require('../modules/steamApi.js');
+const steamAPI = require('../modules/steamApi.js');
 const { MessageEmbed } = require('discord.js');
 const { db } = require('../modules/mysql.js');
 
@@ -23,17 +23,21 @@ module.exports = {
 			} else if (!results.length) {
 				await interaction.reply({ content: 'No hay datos para esa ID', ephemeral: true });
 			} else {
-				const profileInfo = await fetchProfileInfo(results[0].steamid64)
-				const profile = profileInfo.response.players[0];
+				const basicProfileInfo = await steamAPI.fetchBasicProfileInfo(results[0].steamid64);
+				const steamLevel = await steamAPI.fetchSteamLevel(results[0].steamid64);
+				const GMData = await  steamAPI.fetchGMstats(results[0].steamid64);
+				const profile = basicProfileInfo.response.players[0];
 				const embed = new MessageEmbed()
 					.setColor('#39CEDB')
 					.setURL(String(profile.profileurl))
 					.setTitle(`Informacion de ${String(profile.personaname)}`)
 					.setThumbnail(profile.avatarfull)
 					.addFields(
+						{ name: 'Nivel de Steam', value: steamLevel.response.player_level.toString()},
 						{ name: 'Estado', value: checkStatus(profile.personastate) },
 						{ name: 'SteamID', value: steam.convertToText(profile.steamid), inline: true },
-						{ name: 'SteamID64', value: profile.steamid, inline: true }
+						{ name: 'SteamID64', value: profile.steamid, inline: true },
+						//{ name: "¿Tiene Garry's Mod comprado?", value: checkGModOwnership(ownershipData) }
 					)
 				await interaction.reply({ embeds: [embed] });
 			}
@@ -48,4 +52,8 @@ function checkStatus(status) {
 	default:
 		return 'Conectado';
 	}
+}
+
+function checkGModOwnership(data) {
+
 }
