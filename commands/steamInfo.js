@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const steam = require('steamidconvert')();
+const steamConvert = require('steamidconvert')();
 const steamAPI = require('../modules/steamApi.js');
 const { MessageEmbed } = require('discord.js');
 
@@ -15,7 +15,7 @@ module.exports = {
 	async execute(interaction) {
 		let steamID;
 		try {
-			steamID = steam.convertTo64(interaction.options.getString('steamid'));
+			steamID = steamConvert.convertTo64(interaction.options.getString('steamid'));
 		} catch (ex) {
 			await interaction.reply({ content: 'SteamID inválida', ephemeral: true });
 			return;
@@ -32,7 +32,7 @@ module.exports = {
 			.addFields(
 				{ name: 'Nivel de Steam', value: steamLevel.response.player_level.toString()},
 				{ name: 'Estado', value: steamAPI.checkStatus(profile.personastate) },
-				{ name: 'SteamID', value: steam.convertToText(profile.steamid), inline: true },
+				{ name: 'SteamID', value: steamConvert.convertToText(profile.steamid), inline: true },
 				{ name: 'SteamID64', value: profile.steamid, inline: true },
 				{ name: "Horas en Garry's Mod", value: steamAPI.checkGModOwnership(GMData) }
 			);

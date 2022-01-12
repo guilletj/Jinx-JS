@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const steam = require('steamidconvert')();
+const steamConvert = require('steamidconvert')();
 const steamAPI = require('../modules/steamApi.js');
 const { MessageEmbed } = require('discord.js');
 const { db } = require('../modules/mysql.js');
@@ -35,7 +35,7 @@ module.exports = {
 					.addFields(
 						{ name: 'Nivel de Steam', value: steamLevel.response.player_level.toString()},
 						{ name: 'Estado', value: steamAPI.checkStatus(profile.personastate) },
-						{ name: 'SteamID', value: steam.convertToText(profile.steamid), inline: true },
+						{ name: 'SteamID', value: steamConvert.convertToText(profile.steamid), inline: true },
 						{ name: 'SteamID64', value: profile.steamid, inline: true },
 						{ name: "Horas en Garry's Mod", value: steamAPI.checkGModOwnership(GMData) }
 					)
