@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const steam = require('steamidconvert')();
-const { fetchBasicProfileInfo } = require('../modules/steamApi.js')
+const steamAPI = require('../modules/steamApi.js');
 const { MessageEmbed } = require('discord.js');
 
 
@@ -20,27 +20,23 @@ module.exports = {
 			await interaction.reply({ content: 'SteamID inválida', ephemeral: true });
 			return;
 		}
-		const profileInfo = await fetchBasicProfileInfo(steamID)
+		const basicProfileInfo = await steamAPI.fetchBasicProfileInfo(steamid);
+		const steamLevel = await steamAPI.fetchSteamLevel(steamid);
+		const GMData = await  steamAPI.fetchGMstats(steamid);
+		const profile = basicProfileInfo.response.players[0];
 		const embed = new MessageEmbed()
 			.setColor('#39CEDB')
-			.setURL(String(profileInfo.response.players[0].profileurl))
-			.setTitle(`Informacion de ${String(profileInfo.response.players[0].personaname)}`)
-			.setThumbnail(profileInfo.response.players[0].avatarfull)
+			.setURL(String(profile.profileurl))
+			.setTitle(`Informacion de ${String(profile.personaname)}`)
+			.setThumbnail(profile.avatarfull)
 			.addFields(
-				{ name: 'Estado', value: checkStatus(profileInfo.response.players[0].personastate) },
-				{ name: 'SteamID', value: interaction.options.getString('steamid'), inline: true},
-				{ name: 'SteamID64', value: steamID, inline: true }
-			)
+				{ name: 'Nivel de Steam', value: steamLevel.response.player_level.toString()},
+				{ name: 'Estado', value: steamAPI.checkStatus(profile.personastate) },
+				{ name: 'SteamID', value: steam.convertToText(profile.steamid), inline: true },
+				{ name: 'SteamID64', value: profile.steamid, inline: true },
+				{ name: "Horas en Garry's Mod", value: steamAPI.checkGModOwnership(GMData) }
+			);
 		await interaction.reply({ embeds: [embed] });
 	},
 };
-
-function checkStatus(status) {
-	switch (status) {
-	case 0:
-		return 'Desconectado';
-	default:
-		return 'Conectado';
-	}
-}
 
