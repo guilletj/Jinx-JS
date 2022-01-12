@@ -34,32 +34,13 @@ module.exports = {
 					.setThumbnail(profile.avatarfull)
 					.addFields(
 						{ name: 'Nivel de Steam', value: steamLevel.response.player_level.toString()},
-						{ name: 'Estado', value: checkStatus(profile.personastate) },
+						{ name: 'Estado', value: steamAPI.checkStatus(profile.personastate) },
 						{ name: 'SteamID', value: steam.convertToText(profile.steamid), inline: true },
 						{ name: 'SteamID64', value: profile.steamid, inline: true },
-						{ name: "Horas en Garry's Mod", value: checkGModOwnership(GMData) }
+						{ name: "Horas en Garry's Mod", value: steamAPI.checkGModOwnership(GMData) }
 					)
 				await interaction.reply({ embeds: [embed] });
 			}
 		});
 	}
 };
-
-function checkStatus(status) {
-	switch (status) {
-	case 0:
-		return 'Desconectado/Perfil privado';
-	default:
-		return 'Conectado';
-	}
-}
-
-function checkGModOwnership(data) {
-	let d = data.response.games;
-	const GMData = d.find(o => o.appid === 4000);
-	if (GMData == null) {
-		return 'Family Sharing';
-	}
-	const playtimeHours = GMData.playtime_forever/60;
-	return Math.round(playtimeHours).toString();
-}

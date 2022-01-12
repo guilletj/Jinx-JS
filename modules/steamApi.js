@@ -33,8 +33,29 @@ async function fetchGMstats(steamid) {
 	return data;
 }
 
+function checkStatus(status) {
+	switch (status) {
+	case 0:
+		return 'Desconectado/Perfil privado';
+	default:
+		return 'Conectado';
+	}
+}
+
+function checkGModOwnership(data) {
+	let d = data.response.games;
+	const GMData = d.find(o => o.appid === 4000);
+	if (GMData == null) {
+		return 'Family Sharing';
+	}
+	const playtimeHours = GMData.playtime_forever/60;
+	return Math.round(playtimeHours).toString();
+}
+
 module.exports = {
 	fetchBasicProfileInfo,
 	fetchSteamLevel,
-	fetchGMstats
+	fetchGMstats,
+	checkStatus,
+	checkGModOwnership
 };
